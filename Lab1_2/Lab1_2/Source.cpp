@@ -4,10 +4,14 @@
 #include <iostream>
 
 const char* g_pcsz_source =
-"__kernel void memset(__global int * result, __global int* a, __global int * x, __global int* b, __global int * y, __global int * z) \n"
+"__kernel void memset(__global int * result, __global int* a, __global int * x, __global int * y, __global int * sz) \n"
 "{ \n"
-" int i = get_global_id(0);"
-" result[i] = a[0] * x[i] + b[0] * y[i] * z[i]; \n"
+" int i = get_global_id(0) % sz[0]; \n"
+" result[i] = 0; \n"
+" for(int k = 0; k < sz[0]; k++) \n"
+" { \n"
+"  result[i] = result[i] + a[0] * y[i * sz[0] + k] * x[k]; \n"
+" } \n"
 "} \n";
 
 using namespace std::chrono;
@@ -55,7 +59,7 @@ int main()
 
 	// 6. Создание очереди команд
 	errcode_ret = 0;
-	constexpr cl_queue_properties qprop[] = {	CL_QUEUE_PROPERTIES, static_cast<cl_command_queue_properties>(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE), 0 };
+	constexpr cl_queue_properties qprop[] = { CL_QUEUE_PROPERTIES, static_cast<cl_command_queue_properties>(CL_QUEUE_OUT_OF_ORDER_EXEC_MODE_ENABLE), 0 };
 	cl_command_queue queue = clCreateCommandQueueWithProperties(context, device_id, qprop, &errcode_ret);
 	if (errcode_ret != CL_SUCCESS)
 	{
@@ -114,7 +118,7 @@ int main()
 			break;
 		case CL_OUT_OF_HOST_MEMORY: printf(" if there is a failure to allocate resources required by the OpenCL implementation on the host.\n");
 			break;
-		default: 
+		default:
 			break;
 		}
 
@@ -140,7 +144,7 @@ int main()
 	}
 
 
-	for(int k = 2; k <= 20; k++)
+	for (int k = 2; k <= 20; k++)
 	{
 		const auto g_cu_num_items = 2 << k;
 
@@ -154,40 +158,35 @@ int main()
 		}
 
 		const auto x = new int[g_cu_num_items];
-		const auto y = new int[g_cu_num_items];
-		const auto z = new int[g_cu_num_items];
+		const auto y = new int[g_cu_num_items * g_cu_num_items];
 		for (int i = 0; i < g_cu_num_items; i++) {
-			x[i] = 1;
-			y[i] = 2;
-			z[i] = 3;
+			x[i] = 3;
+			for (int j = 0; j < g_cu_num_items; j++)
+			{
+				y[i * g_cu_num_items + j] = 2;
+			}
 		}
 		int a = 4;
-		int b = 5;
+		int sz = g_cu_num_items;
 		const cl_mem buffer_x = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(x), x, &errcode_ret);
 		if (errcode_ret != CL_SUCCESS)
 		{
 			printf("Error to create buffer");
 			return 0;
 		}
-		const cl_mem buffer_y = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(y), y, &errcode_ret);
+		const cl_mem buffer_y = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(int) * g_cu_num_items * g_cu_num_items, y, &errcode_ret);
 		if (errcode_ret != CL_SUCCESS)
 		{
 			printf("Error to create buffer");
 			return 0;
-		}
-		const cl_mem buffer_z = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(z), z, &errcode_ret);
-		if (errcode_ret != CL_SUCCESS)
-		{
-			printf("Error to create buffer");
-			return 0;
-		}
+		}		
 		const cl_mem buffer_a = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(a), &a, &errcode_ret);
 		if (errcode_ret != CL_SUCCESS)
 		{
 			printf("Error to create buffer");
 			return 0;
 		}
-		const cl_mem buffer_b = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(b), &b, &errcode_ret);
+		const cl_mem buffer_sz = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, sizeof(sz), &sz, &errcode_ret);
 		if (errcode_ret != CL_SUCCESS)
 		{
 			printf("Error to create buffer");
@@ -214,32 +213,22 @@ int main()
 			printf("Error to set kernel arg");
 			return 0;
 		}
-
-		errcode_ret = clSetKernelArg(kernel, 3, sizeof(buffer_b), &buffer_b);
+		errcode_ret = clSetKernelArg(kernel, 3, sizeof(buffer_y), &buffer_y);
 		if (errcode_ret != CL_SUCCESS)
 		{
 			printf("Error to set kernel arg");
 			return 0;
 		}
-
-		errcode_ret = clSetKernelArg(kernel, 4, sizeof(buffer_y), &buffer_y);
+		errcode_ret = clSetKernelArg(kernel, 4, sizeof(buffer_sz), &buffer_sz);
 		if (errcode_ret != CL_SUCCESS)
 		{
 			printf("Error to set kernel arg");
 			return 0;
 		}
-
-		errcode_ret = clSetKernelArg(kernel, 5, sizeof(buffer_z), &buffer_z);
-		if (errcode_ret != CL_SUCCESS)
-		{
-			printf("Error to set kernel arg");
-			return 0;
-		}
-
 		const auto gpu_start_time = high_resolution_clock::now();
 		// 12. Запуск ядра
 		errcode_ret = CL_SUCCESS;
-		const size_t u_global_work_size = g_cu_num_items;
+		const size_t u_global_work_size = g_cu_num_items * g_cu_num_items;
 		errcode_ret = clEnqueueNDRangeKernel(queue, kernel, 1, nullptr, &u_global_work_size, nullptr, 0, nullptr, nullptr);
 		clFinish(queue);
 		if (errcode_ret != CL_SUCCESS)
@@ -292,7 +281,7 @@ int main()
 
 		// 14. Использование результатов
 		/*errcode_ret = CL_SUCCESS;
-		for (int i = 0; i < g_cuNumItems; ++i)
+		for (int i = 0; i < g_cu_num_items; ++i)
 			std::cout << i << " = " << result[i] << "; ";
 		std::cout << std::endl;
 		if (errcode_ret != CL_SUCCESS)
@@ -311,9 +300,13 @@ int main()
 		// cpu
 		const auto cpu_res = new int[g_cu_num_items];
 		const auto cpu_start_time = high_resolution_clock::now();
-		for(int j = 0; j < g_cu_num_items; j++)
+		for (int i = 0; i < g_cu_num_items; i++)
 		{
-			cpu_res[j] = a * x[j] + b * y[j] * z[j];
+			cpu_res[i] = 0;
+			for(int j = 0; j < g_cu_num_items; j++)
+			{
+				cpu_res[i] = cpu_res[i] + a * y[i * sz + j] * x[j];
+			}
 		}
 		const auto cpu_end_time = high_resolution_clock::now();
 		printf("CPU (sz = %i) = %lld\n", g_cu_num_items, duration_cast<microseconds>(cpu_end_time - cpu_start_time).count());

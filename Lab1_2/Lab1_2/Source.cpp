@@ -6,7 +6,11 @@
 const char* g_pcsz_source =
 "__kernel void memset(__global int * result, __global int* a, __global int * x, __global int * y, __global int * sz) \n"
 "{ \n"
-" int i = get_global_id(0) % sz[0]; \n"
+" int i = get_global_id(0); \n"
+" if (i >= sz[0]) \n"
+" { \n"
+"  return;\n"
+" } \n"
 " result[i] = 0; \n"
 " for(int k = 0; k < sz[0]; k++) \n"
 " { \n"

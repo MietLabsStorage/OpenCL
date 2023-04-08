@@ -232,7 +232,7 @@ int main()
 		const auto gpu_start_time = high_resolution_clock::now();
 		// 12. Запуск ядра
 		errcode_ret = CL_SUCCESS;
-		const size_t u_global_work_size = g_cu_num_items * g_cu_num_items;
+		const size_t u_global_work_size = g_cu_num_items;
 		errcode_ret = clEnqueueNDRangeKernel(queue, kernel, 1, nullptr, &u_global_work_size, nullptr, 0, nullptr, nullptr);
 		clFinish(queue);
 		if (errcode_ret != CL_SUCCESS)

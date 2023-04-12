@@ -1,5 +1,5 @@
 import image_processor as ip
-
+import icecream as ic
 
 def to_negative():
     time = ip.process_image(
@@ -9,12 +9,11 @@ def to_negative():
             {
                 int gid = get_global_id(0);
                 int bgr_chunk = gid * 3;
-                int max_intensity = 255;
                 if (bgr_chunk <= bgr_row_len) 
                 {
-                    negative_row[bgr_chunk] = max_intensity - bgr_row[bgr_chunk];
-                    negative_row[bgr_chunk + 1] = max_intensity - bgr_row[bgr_chunk + 1];
-                    negative_row[bgr_chunk + 2] = max_intensity - bgr_row[bgr_chunk + 2];
+                    negative_row[bgr_chunk] = 255 - bgr_row[bgr_chunk];
+                    negative_row[bgr_chunk + 1] = 255 - bgr_row[bgr_chunk + 1];
+                    negative_row[bgr_chunk + 2] = 255 - bgr_row[bgr_chunk + 2];
                 }
             }
         """,
@@ -33,9 +32,9 @@ def to_grayscale_cl():
                 int bgr_chunk = gid * 3;
                 if (bgr_chunk <= bgr_row_len) 
                 {
-                    double b = bgr_row[bgr_chunk];
-                    double g = bgr_row[bgr_chunk + 1];
-                    double r = bgr_row[bgr_chunk + 2];
+                    char b = bgr_row[bgr_chunk];
+                    char g = bgr_row[bgr_chunk + 1];
+                    char r = bgr_row[bgr_chunk + 2];
                     char k = (char)(0.2126 * r + 0.7152 * g + 0.0722 * b);
                     grayscale_row[bgr_chunk] = k;
                     grayscale_row[bgr_chunk + 1] = k;
@@ -49,5 +48,5 @@ def to_grayscale_cl():
 
 
 to_negative()
-ip.to_grayscale_cv("image.jpg", "grayscale_cv.jpg")
-to_grayscale_cl()
+ic.ic(ip.to_grayscale_cv("image.jpg", "grayscale_cv.jpg"))
+ic.ic(to_grayscale_cl())

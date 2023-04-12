@@ -1,6 +1,7 @@
 import cl_processor as clp
 import numpy as np
 import cv2 as cv2
+from time import perf_counter_ns
 
 __colorsPalette = 3
 
@@ -20,8 +21,11 @@ def process_monochrome_image(image_name, kernel_text, kernel_name, new_image_nam
 
 
 def to_grayscale_cv(image_name, new_image_name):
+    timer_start = perf_counter_ns()
     image = cv2.imread(image_name, cv2.IMREAD_GRAYSCALE)
     cv2.imwrite(new_image_name, image)
+    timer_stop = perf_counter_ns()
+    return timer_stop - timer_start
 
 
 def process_monochrome_buffer(kernel_text, data, kernel_name, blur):

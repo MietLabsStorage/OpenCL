@@ -63,7 +63,7 @@ for i_func in i_funcs:
     COMM = MPI.COMM_WORLD
     RANK = COMM.Get_rank()
     N_PROC = COMM.Get_size() - 1
-    for i in range(3, 10):
+    for i in range(9, 16):
         n = 2 ** i
 
         REPEATS_IN_PROCESS = n // N_PROC
@@ -108,9 +108,9 @@ for i_func in i_funcs:
         fig1, ax1 = plt.subplots()
         fig2, ax2 = plt.subplots()
         ax1.plot(ns, errs)
-        ax1.title.set_text(i_func[1] + ' Отклонение от pi')
+        ax1.title.set_text('#' + str(N_PROC) + ' ' + i_func[1] + ' dev by pi')
         ax2.plot(ns, ts)
-        ax2.title.set_text(i_func[1] + ' Время выполнения')
+        ax2.title.set_text('#' + str(N_PROC) + ' ' + i_func[1] + ' time')
         plt.show(block=False)
 
 plt.show(block=True)

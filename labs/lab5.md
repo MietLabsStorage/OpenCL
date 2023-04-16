@@ -1,4 +1,7 @@
 # N_PROC = 2
+![rect 2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/rect_2.png)    
+![trap 2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/trap_2.png)    
+![simp 2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/simp_2.png)
 ```
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
@@ -109,7 +112,9 @@ ic| i_func[1]: 'Simp.'
 
 
 # N_PROC = 4
-
+![rect 4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/rect_4.png)    
+![trap 4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/trap_4.png)    
+![simp 4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/simp_4.png)
 ```
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
@@ -220,6 +225,9 @@ ic| i_func[1]: 'Simp.'
 
 
 # N_PROC = 8
+![rect 8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/rect_8.png)    
+![trap 8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/trap_8.png)    
+![simp 8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/simp_8.png)
 ```
 ic| i_func[1]: 'Rect.'
     N_PROC: 8

@@ -1,6 +1,7 @@
 import image_processor as ip
 import icecream as ic
 
+
 def to_negative():
     time = ip.process_image(
         "image.jpg",

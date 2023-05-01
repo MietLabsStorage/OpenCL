@@ -29,3 +29,14 @@ def execute_kernel(kernel, context, queue, sample, *args):
     output_array = np.empty_like(sample)
     cl.enqueue_copy(queue, output_array, out_array)
     return output_array, timer_stop - timer_start
+
+
+def execute_kernel_local(kernel, context, queue, sample, *args):
+    out_array = get_buffer_w(context, sample.nbytes)
+    local_array = cl.LocalMemory(out_array.size)
+    timer_start = perf_counter_ns()
+    kernel(queue, sample.shape, None, *args, local_array, out_array).wait()
+    timer_stop = perf_counter_ns()
+    output_array = np.empty_like(sample)
+    cl.enqueue_copy(queue, output_array, out_array)
+    return output_array, timer_stop - timer_start

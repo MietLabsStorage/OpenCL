@@ -1,337 +1,334 @@
 # N_PROC = 2
-![rect 2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/rect_2.png)    
-![trap 2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/trap_2.png)    
-![simp 2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/simp_2.png)
+![n2](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/n2.png)    
 ```
+mjajksj@Air-Maksim labs % mpirun -np 3 python3 lab5.py
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 512
-    err: 0.8584049622263485
-    time: 0.053734
+    err: 0.6748431144897507
+    time: 0.03771
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 1024
-    err: 0.8623121116501586
-    time: 0.0010640000000000094
+    err: 0.10126162647589299
+    time: 0.0010659999999999975
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 2048
-    err: 0.8584070406744968
-    time: 0.0020669999999999994
+    err: 0.022674388559500436
+    time: 0.0020949999999999996
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 4096
-    err: 0.8584072774414051
-    time: 0.004195000000000004
+    err: 0.005097527131315616
+    time: 0.004198000000000007
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 8192
-    err: 0.8579190491285438
-    time: 0.008234999999999992
+    err: 0.0013319643954927685
+    time: 0.00839999999999999
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 16384
-    err: 0.8586514831672964
-    time: 0.016717999999999997
+    err: 0.0015863985472406306
+    time: 0.017167
 ic| i_func[1]: 'Rect.'
     N_PROC: 2
     n: 32768
-    err: 0.8582852751508945
-    time: 0.033278000000000016
+    err: 0.0003172712275967271
+    time: 0.03357299999999999
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 512
-    err: 0.8720792209427266
-    time: 0.0005379999999999829
+    err: 0.19162831299317773
+    time: 0.0005519999999999969
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 1024
-    err: 0.8613323586635175
-    time: 0.0010320000000000051
+    err: 0.07668163227156066
+    time: 0.0010550000000000004
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 2048
-    err: 0.8579181957710826
-    time: 0.0020319999999999783
+    err: 0.030027243901987966
+    time: 0.0020519999999999983
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 4096
-    err: 0.8591396000068734
-    time: 0.00409000000000001
+    err: 0.00723096335671336
+    time: 0.0041270000000000195
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 8192
-    err: 0.8587735214626839
-    time: 0.008262999999999993
+    err: 0.020609099268467546
+    time: 0.008349999999999996
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 16384
-    err: 0.8588345842730298
-    time: 0.016468999999999984
+    err: 0.004070604809453204
+    time: 0.016805999999999988
 ic| i_func[1]: 'Trap.'
     N_PROC: 2
     n: 32768
-    err: 0.9350369201407496
-    time: 0.03255899999999995
+    err: 0.06648415517442041
+    time: 0.032974
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 512
-    err: 0.5875564865056981
-    time: 0.0005339999999999789
+    err: 1.0081577015546452
+    time: 0.0005249999999999977
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 1024
-    err: 0.7656314012874814
-    time: 0.0010020000000000029
+    err: 0.04049707358343024
+    time: 0.0009990000000000276
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 2048
-    err: 0.8588951238730846
-    time: 0.0019899999999999918
+    err: 0.02506220674181714
+    time: 0.0020060000000000078
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 4096
-    err: 0.858976905949353
-    time: 0.0040220000000000256
+    err: 0.00921495071946632
+    time: 0.004022999999999999
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 8192
-    err: 0.8583666337214675
-    time: 0.008139000000000007
+    err: 1.6760208394472897e-06
+    time: 0.008086999999999955
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 16384
-    err: 0.8584683762634207
-    time: 0.015790000000000026
+    err: 0.0056175604010704205
+    time: 0.015820999999999974
 ic| i_func[1]: 'Simp.'
     N_PROC: 2
     n: 32768
-    err: 0.8584378627044664
-    time: 0.03193099999999999
+    err: 0.01949571236207026
+    time: 0.03197799999999995
 ```
 
 
 # N_PROC = 4
-![rect 4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/rect_4.png)    
-![trap 4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/trap_4.png)    
-![simp 4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/simp_4.png)
+![n4](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/n4.png)    
 ```
+mjajksj@Air-Maksim labs % mpirun -np 5 python3 lab5.py
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 512
-    err: 0.866185596735022
-    time: 0.000828
+    err: 0.18806302527267826
+    time: 0.002049
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 1024
-    err: 0.8583988609369557
-    time: 0.0010509999999999999
+    err: 0.258843747853887
+    time: 0.0010539999999999994
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 2048
-    err: 0.8584051249467883
-    time: 0.0030950000000000005
+    err: 0.20976787426482435
+    time: 0.0020529999999999993
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 4096
-    err: 0.8584068128897897
-    time: 0.008343999999999997
+    err: 0.20910785820459354
+    time: 0.004093000000000006
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 8192
-    err: 0.8584072142838188
-    time: 0.009496000000000004
+    err: 0.14113270536031353
+    time: 0.008799999999999995
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 16384
-    err: 0.8586514530111238
-    time: 0.016848000000000002
+    err: 0.008459505615555418
+    time: 0.016375
 ic| i_func[1]: 'Rect.'
     N_PROC: 4
     n: 32768
-    err: 0.8582851689453612
-    time: 0.034614000000000006
+    err: 0.0139649641541979
+    time: 0.033903
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 512
-    err: 0.8642522764261891
-    time: 0.0005459999999999909
+    err: 0.02932789632971211
+    time: 0.000540000000000096
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 1024
-    err: 0.861314751423258
-    time: 0.0010259999999999991
+    err: 0.020207659300307323
+    time: 0.0010360000000000369
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 2048
-    err: 0.8579129900625233
-    time: 0.002039000000000013
+    err: 0.031454128659747393
+    time: 0.0020369999999999555
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 4096
-    err: 0.8591385885191185
-    time: 0.0041120000000000045
+    err: 0.041687272192946434
+    time: 0.00412200000000007
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 8192
-    err: 0.8592615796173106
-    time: 0.008163000000000004
+    err: 0.020909667422459144
+    time: 0.008117999999999959
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 16384
-    err: 0.8585903940551027
-    time: 0.016642000000000018
+    err: 0.015351009260241355
+    time: 0.016649000000000025
 ic| i_func[1]: 'Trap.'
     N_PROC: 4
     n: 32768
-    err: 0.973244932829278
-    time: 0.032706999999999986
+    err: 0.47619535174665417
+    time: 0.03244199999999997
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 512
-    err: 0.8297466535634337
-    time: 0.0005490000000000217
+    err: 0.4869830592676587
+    time: 0.0005299999999999194
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 1024
-    err: 0.480456469256505
-    time: 0.0010120000000000129
+    err: 0.7373542076557325
+    time: 0.0009879999999999889
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 2048
-    err: 0.8588900218808186
-    time: 0.001994999999999969
+    err: 0.7463602608794679
+    time: 0.0019730000000000025
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 4096
-    err: 0.8586505728480116
-    time: 0.004055000000000031
+    err: 0.6538835271039733
+    time: 0.003990999999999967
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 8192
-    err: 0.8586920046952375
-    time: 0.008085000000000009
+    err: 0.11017370564289486
+    time: 0.007986999999999966
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 16384
-    err: 0.8583869606474352
-    time: 0.01596199999999992
+    err: 0.0012801106725826017
+    time: 0.015701999999999994
 ic| i_func[1]: 'Simp.'
     N_PROC: 4
     n: 32768
-    err: 0.8583971639734203
-    time: 0.03195400000000004
+    err: 0.05363767216213633
+    time: 0.03295499999999996
 ```
 
 
 # N_PROC = 8
-![rect 8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/rect_8.png)    
-![trap 8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/trap_8.png)    
-![simp 8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/simp_8.png)
+![n8](https://github.com/MietLabsStorage/OpenCL/blob/main/labs/lab5-photos/n8.png)    
 ```
+mjajksj@Air-Maksim labs % mpirun -np 9 --oversubscribe  python3 lab5.py    
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 512
-    err: 0.8660180571740881
-    time: 0.000613
+    err: 0.03431451285653653
+    time: 0.001135
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 1024
-    err: 0.8622535349563893
-    time: 0.001069999999999998
+    err: 0.041332109945198425
+    time: 0.001066000000000001
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 2048
-    err: 0.8583929801416184
-    time: 0.0019519999999999989
+    err: 0.0037327918727241283
+    time: 0.002075999999999998
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 4096
-    err: 0.8584038423771516
-    time: 0.003960999999999999
+    err: 0.0010717526135133326
+    time: 0.004130999999999999
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 8192
-    err: 0.8579182080057244
-    time: 0.008279000000000002
+    err: 0.011749331338934077
+    time: 0.009834000000000002
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 16384
-    err: 0.8586512720531143
-    time: 0.016342000000000002
+    err: 0.1257731178954251
+    time: 0.017056
 ic| i_func[1]: 'Rect.'
     N_PROC: 8
     n: 32768
-    err: 0.8585276419785739
-    time: 0.033044
+    err: 0.0290159533077885
+    time: 0.03520499999999999
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 512
-    err: 0.8641037224795465
-    time: 0.0005400000000000127
+    err: 0.003731487575298509
+    time: 0.0005640000000000089
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 1024
-    err: 0.8573772034137797
-    time: 0.0010370000000000101
+    err: 0.038144127192721644
+    time: 0.0010360000000000091
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 2048
-    err: 0.8578979443409289
-    time: 0.0020519999999999983
+    err: 0.0769225778884497
+    time: 0.0020580000000000043
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 4096
-    err: 0.8601119170246339
-    time: 0.004041000000000017
+    err: 0.000841461912018282
+    time: 0.004147999999999985
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 8192
-    err: 0.8587724885227814
-    time: 0.008179999999999993
+    err: 0.022763749950188927
+    time: 0.008061000000000013
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 16384
-    err: 0.8585901875381889
-    time: 0.016654000000000002
+    err: 0.027160391792244276
+    time: 0.016525000000000012
 ic| i_func[1]: 'Trap.'
     N_PROC: 8
     n: 32768
-    err: 0.9229430746691989
-    time: 0.032288999999999984
+    err: 0.6387183712116342
+    time: 0.03272999999999998
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 512
-    err: 0.06081476089430504
-    time: 0.0005259999999999987
+    err: 1.4207839239010593
+    time: 0.0005299999999999749
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 1024
-    err: 0.5728790175048482
-    time: 0.0009900000000000186
+    err: 1.3267395634307142
+    time: 0.0010110000000000396
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 2048
-    err: 0.8582295435507423
-    time: 0.0019660000000000233
+    err: 1.1312826635062936
+    time: 0.002051000000000025
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 4096
-    err: 0.8586477942634181
-    time: 0.003941
+    err: 0.2848572170137418
+    time: 0.004074000000000022
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 8192
-    err: 0.858528502654913
-    time: 0.007953000000000016
+    err: 0.009431408511036743
+    time: 0.008060000000000012
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 16384
-    err: 0.8584681578955244
-    time: 0.015671999999999964
+    err: 0.02908067991675889
+    time: 0.015887999999999958
 ic| i_func[1]: 'Simp.'
     N_PROC: 8
     n: 32768
-    err: 0.858356427976871
-    time: 0.03417999999999999
+    err: 0.0946880614464023
+    time: 0.04222300000000001
 ```

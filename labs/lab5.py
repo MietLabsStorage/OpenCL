@@ -20,32 +20,35 @@ def rectangle(a, b, h, f):
 def trapezium(a, b, h, f):
     first_part = (f(a) + f(b)) / 2
 
-    def s1(x):
-        return f(a + x * h)
+    def inner(a, b, h, f):
+        def s1(x):
+            return f(a + x * h)
 
-    def s2(x):
-        return 0
+        def s2(x):
+            return 0
 
-    def solve(sum12):
-        return h * (first_part + sum12)
+        def solve(sum12):
+            return h * (first_part + sum12)
 
-    return s1, s2, solve
+        return s1, s2, solve
+
+    return inner(a, b, h, f)
 
 
 def simpson(a, b, h, f):
     s3 = (f(a) + f(b)) / 2
 
     def inner(a, b, h, f):
-        def left(x):
+        def s1(x):
             return 2 * f(a + (x - 1 / 2) * h)
 
-        def right(x):
+        def s2(x):
             return f(a + x * h)
 
         def solve(sum12):
             return h / 3 * (s3 + sum12)
 
-        return left, right, solve
+        return s1, s2, solve
 
     return inner(a, b, h, f)
 
@@ -74,17 +77,17 @@ for i_func in i_funcs:
         H = (B - A) / n
 
         func = i_func[0](A, B, H, df)
-        chunk1_func = func[0]
-        chunk2_func = func[1]
+        s1_func = func[0]
+        s2_func = func[1]
         reduce_func = func[2]
 
         start_time = MPI.Wtime()
         if RANK < N_PROC:
-            for _ in range(0, REPEATS_IN_PROCESS):
-                chunk1_res = chunk1_func(RANK)
-                chunk2_res = chunk2_func(RANK)
-                COMM.send(chunk1_res, dest=N_PROC)
-                COMM.send(chunk2_res, dest=N_PROC)
+            for repeat in range(0, REPEATS_IN_PROCESS):
+                s1_res = s1_func(RANK * REPEATS_IN_PROCESS + repeat)
+                s2_res = s2_func(RANK * REPEATS_IN_PROCESS + repeat)
+                COMM.send(s1_res, dest=N_PROC)
+                COMM.send(s2_res, dest=N_PROC)
 
         res = 0
         if RANK == N_PROC:

@@ -21,6 +21,10 @@ def bind_to_buffer(context, host_buf):
     return cl.Buffer(context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=host_buf)
 
 
+def get_rw_pipe(ctx, element_size=1, capacity=1024):
+    return cl.Pipe(ctx, cl.mem_flags.READ_WRITE, np.int32(element_size), np.int32(capacity), [])
+
+
 def execute_kernel(kernel, context, queue, sample, *args):
     out_array = get_buffer_w(context, sample.nbytes)
     timer_start = perf_counter_ns()

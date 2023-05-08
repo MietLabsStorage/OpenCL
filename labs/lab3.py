@@ -127,7 +127,7 @@ def box_blur_local(blur_size):
 
 x1 = []
 y1 = []
-for i in range(2, 9 + 1):
+for i in range(2, 5 + 1):
     sz = 2**i
     t = box_blur(sz)
     ic(i, sz, t)
@@ -136,7 +136,7 @@ for i in range(2, 9 + 1):
 
 x2 = []
 y2 = []
-for i in range(2, 9 + 1):
+for i in range(2, 12 + 1):
     sz = 2**i
     t = box_blur_local(sz)
     ic(i, sz, t)
@@ -145,7 +145,7 @@ for i in range(2, 9 + 1):
 
 x3 = []
 y3 = []
-for i in range(2, 9 + 1):
+for i in range(2, 12 + 1):
     sz = 2 ** i
     t = box_blur_const(sz)
     ic(i, sz, t)

@@ -39,14 +39,21 @@ def process_monochrome_buffer(kernel_text, data, kernel_name, blur, is_local):
     return processed_data, d_time
 
 
-def process_buffer(kernel_text, data, kernel_name, blur):
+def process_buffer(kernel_text, data, kernel_name, *args, **kwargs):
     context, queue = clp.create_context_and_queue()
-    prog = clp.build_program(context, kernel_text)
+    build_options = kwargs['options'] if 'options' in kwargs else None
+    prog = clp.build_program(context, kernel_text, build_options)
+
+    if 'multiple' in kwargs and kwargs['multiple']:
+        cl_func = [getattr(prog, f) for f in kernel_name]
+    else:
+        cl_func = getattr(prog, kernel_name)
+
     cl_func = getattr(prog, kernel_name)
     all_time = 0
     processed_rows = []
     for d_row in data:
-        processed, d_time = process_rows(cl_func, d_row, context, queue)
+        processed, d_time = process_rows(cl_func, d_row, context, queue, 'multiple' in kwargs)
         all_time += d_time
         processed_rows.append(processed)
     processed_data = np.array(processed_rows)
@@ -80,15 +87,26 @@ def process_monochrome_rows(func, rows, context, queue, blur, row_len, col_len, 
     return np.array(processed_row), time
 
 
-def process_rows(func, rows, context, queue):
+def process_rows(func, rows, context, queue, multiple=False):
     flatten_rows = rows.flatten()
     flatten_rows_len = np.int32(flatten_rows.shape[0])
     row = clp.bind_to_buffer(context, flatten_rows)
-    processed_row, time = clp.execute_kernel(
-        func,
-        context,
-        queue,
-        flatten_rows,
-        flatten_rows_len,
-        row)
+    if multiple:
+        processed_row, time = clp.execute_n_kernels(
+            func,
+            context,
+            queue,
+            flatten_rows,
+            flatten_rows_len,
+            row,
+            np.int32(10))
+    else:
+        processed_row, time = clp.execute_kernel(
+            func,
+            context,
+            queue,
+            flatten_rows,
+            flatten_rows_len,
+            row,
+            np.int32(10))
     return np.array(np.array_split(processed_row, len(processed_row) // __colorsPalette)), time

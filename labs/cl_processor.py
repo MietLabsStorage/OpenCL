@@ -9,8 +9,8 @@ def create_context_and_queue():
     return context, queue
 
 
-def build_program(context, kernel):
-    return cl.Program(context, kernel).build()
+def build_program(context, kernel, options=None):
+    return cl.Program(context, kernel).build(options=options if options else [])
 
 
 def get_buffer_w(context, size):
@@ -21,10 +21,25 @@ def bind_to_buffer(context, host_buf):
     return cl.Buffer(context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, hostbuf=host_buf)
 
 
+def get_rw_pipe(ctx, element_size=1, capacity=1024):
+    return cl.Pipe(ctx, cl.mem_flags.READ_WRITE, np.int32(element_size), np.int32(capacity), [])
+
+
 def execute_kernel(kernel, context, queue, sample, *args):
     out_array = get_buffer_w(context, sample.nbytes)
     timer_start = perf_counter_ns()
     kernel(queue, sample.shape, None, *args, out_array).wait()
+    timer_stop = perf_counter_ns()
+    output_array = np.empty_like(sample)
+    cl.enqueue_copy(queue, output_array, out_array)
+    return output_array, timer_stop - timer_start
+
+
+def execute_n_kernels(kernels, context, queue, sample, *args):
+    out_array = get_buffer_w(context, sample.nbytes)
+    timer_start = perf_counter_ns()
+    for kernel in kernels:
+        kernel(queue, sample.shape, None, *args, out_array).wait()
     timer_stop = perf_counter_ns()
     output_array = np.empty_like(sample)
     cl.enqueue_copy(queue, output_array, out_array)

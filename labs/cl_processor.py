@@ -2,9 +2,12 @@ from time import perf_counter_ns
 import numpy as np
 import pyopencl as cl
 
+device = cl.get_platforms()[1].get_devices()[0]
+print(device)
+
 
 def create_context_and_queue():
-    context = cl.create_some_context()
+    context = cl.Context(devices=[device])
     queue = cl.CommandQueue(context)
     return context, queue
 
@@ -22,7 +25,7 @@ def bind_to_buffer(context, host_buf):
 
 
 def get_rw_pipe(ctx, element_size=1, capacity=1024):
-    return cl.Pipe(ctx, cl.mem_flags.READ_WRITE, np.int32(element_size), np.int32(capacity), [])
+    return cl.Pipe(ctx, cl.mem_flags.READ_WRITE, np.int32(element_size), np.int32(capacity), ())
 
 
 def execute_kernel(kernel, context, queue, sample, *args):

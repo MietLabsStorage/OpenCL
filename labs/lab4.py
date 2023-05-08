@@ -49,7 +49,7 @@ box_blur = {
 
 to_grayscale= {
     "signature": """
-            __kernel void to_grayscale(int bgr_row_len, __global char *bgr_row, int temp, __global char *grayscale_row)
+            __kernel void to_grayscale(int bgr_row_len, __global char *bgr_row, __global char *grayscale_row)
             """,
     "body": """           
             int gid = get_global_id(0);
@@ -158,7 +158,7 @@ def by_pipes():
                          SPIN_READ_PIPE(blur_pipe, GET_COLOR_INDEX(BLUE, blur_row, pixel_index));)
         }}
         """
-    ctx, _ = clp.create_context_and_queue()
+    ctx, queue = clp.create_context_and_queue()
     pipe = clp.get_rw_pipe(ctx, 10, 4096)
     blurred_and_grey_data, blurred_and_grey_time = process_buffer(blur_and_grey_text,
                                                                   data,
@@ -169,8 +169,10 @@ def by_pipes():
                                                                   pipe,
                                                                   pipe,
                                                                   multiple=True,
-                                                                  options=['-cl-std=CL2.0'])
-    cv2.imwrite("blurred_and_gray.jpg", blurred_and_grey_data)
+                                                                  options=['-cl-std=CL2.0'],
+                                                                  ctx=ctx,
+                                                                  queue=queue)
+    cv2.imwrite("by-pipe.jpg", blurred_and_grey_data)
     return blurred_and_grey_time
 
 

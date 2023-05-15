@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 from icecream import ic
 from mpi4py import MPI
@@ -34,8 +36,9 @@ def step(i, step_row, subtract_row):
 COMM = MPI.COMM_WORLD
 RANK = COMM.Get_rank()
 MATRIX = None
-ROOT_RANK = 0
+ROOT_RANK = COMM.Get_size() - 1
 N = 0
+print(RANK)
 if RANK == ROOT_RANK:
     N = 4
     MATRIX = get_hilbert_matrix(N)
@@ -46,7 +49,7 @@ if RANK == ROOT_RANK:
     for i in range(N-1):
         for j, row in enumerate(MATRIX):
             print(('root send', j, i))
-            COMM.isend((MATRIX[i], row), dest=j, tag=i)
+            COMM.send((MATRIX[i], row), dest=j, tag=i)
 
 COMM.Barrier()
 
@@ -55,16 +58,11 @@ if RANK != ROOT_RANK:
     N = COMM.bcast(N, root=ROOT_RANK)
     for i in range(N-1):
         print(('they get', ROOT_RANK, i))
-        step_row, sub_row = COMM.irecv(source=ROOT_RANK,
-                                       tag=i).wait()
+        step_row, sub_row = COMM.recv(source=ROOT_RANK,
+                                       tag=i)
         mi, new_row = step(i, step_row, sub_row)
-
-COMM.Barrier()
-
-if RANK != ROOT_RANK:
-    for i in range(N-1):
         print(('they send', ROOT_RANK, i))
-        COMM.isend((mi, new_row), dest=ROOT_RANK)
+        COMM.send((mi, new_row), dest=ROOT_RANK)
 
 COMM.Barrier()
 
@@ -72,7 +70,7 @@ if RANK == ROOT_RANK:
     for i in range(N-1):
         for j in range(N):
             print(('root get', j))
-            mi, new_row = COMM.irecv(source=j).wait()
+            mi, new_row = COMM.recv(source=j)
             L.append(mi)
             MATRIX[j] = new_row
     print(L)

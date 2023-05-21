@@ -1,81 +1,83 @@
 import time
-
 import numpy as np
 from icecream import ic
 from mpi4py import MPI
 
 
 def get_hilbert_matrix(n):
-    return np.array([[i + 1 + j + 1 - 1 for i in range(n)] for j in range(n)])
+    return np.array([[1 / (i + 1 + j + 1 - 1) for i in range(n)] for j in range(n)])
 
 
-def multiply_to_num(row, number):
-    return [a * number for a in row]
-
-
-def divide_to_num(row, number):
-    return [a / number for a in row]
-
-
-def divide_column(matrix, ci, number):
-    column = [row[ci] for row in matrix]
-    divided_column = divide_to_num(column, number)
-    for row in matrix:
-        row[ci] = divided_column[ci]
-    return matrix
-
-
-def step(i, step_row, subtract_row):
-    mi = subtract_row[i] / step_row[i]
-    mul_step_row = multiply_to_num(step_row, mi)
-    return (mi, [e - mul
-                 for mul, e in zip(mul_step_row,
-                                   subtract_row)])
-
-
+alg="by_column"
+N = 512
 COMM = MPI.COMM_WORLD
 RANK = COMM.Get_rank()
-MATRIX = None
 ROOT_RANK = COMM.Get_size() - 1
-N = 0
-print(RANK)
+NC = N // ROOT_RANK
+A = []
+L = np.eye(N)
+U = []
+hist=[]
+times = [0.0] * ROOT_RANK
 if RANK == ROOT_RANK:
-    N = 4
-    MATRIX = get_hilbert_matrix(N)
-    COMM.bcast(MATRIX, root=ROOT_RANK)
-    COMM.bcast(N, root=ROOT_RANK)
-    L = []
-    U = []
-    for i in range(N-1):
-        for j, row in enumerate(MATRIX):
-            print(('root send', j, i))
-            COMM.send((MATRIX[i], row), dest=j, tag=i)
+    A = get_hilbert_matrix(N)
+    U = np.copy(A)
 
-COMM.Barrier()
+start_time = MPI.Wtime()
+for j in range(N - 1):
+    if RANK == ROOT_RANK:
+        M = np.eye(N)
 
-if RANK != ROOT_RANK:
-    MATRIX = COMM.bcast(MATRIX, root=ROOT_RANK)
-    N = COMM.bcast(N, root=ROOT_RANK)
-    for i in range(N-1):
-        print(('they get', ROOT_RANK, i))
-        step_row, sub_row = COMM.recv(source=ROOT_RANK,
-                                       tag=i)
-        mi, new_row = step(i, step_row, sub_row)
-        print(('they send', ROOT_RANK, i))
-        COMM.send((mi, new_row), dest=ROOT_RANK)
+        mxi, mxj = j, j
+        for k in range(j, N):
+            #if U[k][j] > U[mxi][j]:
+            #    mxi = k
+            if U[j][k] > U[j][mxj]:
+                mxj = k
+        hist = [[mxi, mxj, j, j]] + hist
+        U[:, [j, mxj]] = U[:, [mxj, j]]
+        #ic('qqq', U)
+        U[[j, mxi], :] = U[[mxi, j], :]
 
-COMM.Barrier()
+        for i in range(j + 1, ROOT_RANK):
+            if j + 1 == ROOT_RANK - 1:
+                break
+            m = U[i][j] / U[j][j]
+            #ic(i, U[i], j, N)
+            for tg in range(NC):
+                COMM.send((U[i], U[:, j], L[i], m), dest=i, tag=tg)
+        for i in range(j + 1, ROOT_RANK):
+            if j + 1 == ROOT_RANK - 1:
+                break
+            for tg in range(NC):
+                U[i], L[i] = COMM.recv(source=i, tag=tg)
+        #ic(j, U, L)
+    else:
+        for tg in range(NC):
+            row, col, l_row, m = COMM.recv(source=ROOT_RANK, tag=tg)
+            for k in range(j, N):
+                # if j == 0:
+                #     ic(RANK, k, row[k], col[k], m, row[k] - col[k] * m)
+                row[k] = row[k] - col[k] * m
+                if RANK*NC+tg > j:
+                    l_row[j] = m
+            COMM.send((row, l_row), dest=ROOT_RANK, tag=tg)
+    end_time = MPI.Wtime()
+    times[RANK - 1] = end_time - start_time
 
 if RANK == ROOT_RANK:
-    for i in range(N-1):
-        for j in range(N):
-            print(('root get', j))
-            mi, new_row = COMM.recv(source=j)
-            L.append(mi)
-            MATRIX[j] = new_row
-    print(L)
-    U = MATRIX
-    print(U)
+    # ic(A)
+    Alu = np.matmul(L, U)
+    # ic(L)
+    # ic(U)
+    # ic(Alu)
+    for idx in hist:
+        Alu[:, [idx[3], idx[1]]] = Alu[:, [idx[1], idx[3]]]
+        Alu[[idx[2], idx[0]], :] = Alu[[idx[0], idx[2]], :]
 
-
-
+    # ic(Alu)
+    err = abs(np.vectorize(abs)(np.matmul(L, U)).sum() - A.sum())
+    ic(N, err, sum(times), alg, ROOT_RANK)
+    with open("lab6.txt", "a") as file:
+        file.write(f"{N}\t{ROOT_RANK}\t{err}\t{sum(times)}\t{alg}\n")
+        ic('written')
